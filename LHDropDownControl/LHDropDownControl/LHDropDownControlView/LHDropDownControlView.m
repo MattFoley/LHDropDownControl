@@ -33,27 +33,39 @@
 
 #pragma mark - Object Life Cycle
 
+- (void)initialize
+{
+    // Background
+    mBgImage = [[UIImage imageNamed:@"dropdown_bg"] resizableImageWithCapInsets:UIEdgeInsetsMake(5, 5, 5, 5)];
+    UIImageView *backGroundView = [[UIImageView alloc] initWithImage:mBgImage];
+    backGroundView.frame = self.bounds;
+    [self addSubview:backGroundView];
+    
+    // Title
+    mTitleLabel = [[UILabel alloc] initWithFrame:CGRectInset(self.bounds, 5, 0)];
+    mTitleLabel.textAlignment = NSTextAlignmentCenter;
+    mTitleLabel.textColor = [UIColor whiteColor];
+    mTitleLabel.backgroundColor = [UIColor clearColor];
+    mTitleLabel.font = [UIFont boldSystemFontOfSize:14];
+    [self addSubview:mTitleLabel];
+}
+
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     if (self) {
         mBaseFrame = frame;
         
-        // Background
-        mBgImage = [[UIImage imageNamed:@"dropdown_bg"] resizableImageWithCapInsets:UIEdgeInsetsMake(5, 5, 5, 5)];
-        UIImageView *backGroundView = [[UIImageView alloc] initWithImage:mBgImage];
-        backGroundView.frame = self.bounds;
-        [self addSubview:backGroundView];
-        
-        // Title
-        mTitleLabel = [[UILabel alloc] initWithFrame:CGRectInset(self.bounds, 5, 0)];
-        mTitleLabel.textAlignment = NSTextAlignmentCenter;
-        mTitleLabel.textColor = [UIColor whiteColor];
-        mTitleLabel.backgroundColor = [UIColor clearColor];
-        mTitleLabel.font = [UIFont boldSystemFontOfSize:14];
-        [self addSubview:mTitleLabel];
+        [self initialize];
     }
     return self;
+}
+
+- (void)awakeFromNib
+{
+    [super awakeFromNib];
+    
+    [self initialize];
 }
 
 

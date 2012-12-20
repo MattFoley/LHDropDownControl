@@ -29,7 +29,7 @@
 @interface LHDropDownControlView : UIView
 
 @property (nonatomic) NSString *title;
-@property (nonatomic, weak) id<LHDropDownControlViewDelegate> delegate;
+@property (nonatomic, weak) IBOutlet id<LHDropDownControlViewDelegate> delegate;
 
 - (void)setSelectionOptions:(NSArray *)selectionOptions withTitles:(NSArray *)selectionOptionTitles;
 
