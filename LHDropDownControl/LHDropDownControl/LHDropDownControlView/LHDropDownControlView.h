@@ -32,5 +32,5 @@
 @property (nonatomic, weak) IBOutlet id<LHDropDownControlViewDelegate> delegate;
 
 - (void)setSelectionOptions:(NSArray *)selectionOptions withTitles:(NSArray *)selectionOptionTitles;
-
+- (CATransform3D)contractedTransorm;
 @end
