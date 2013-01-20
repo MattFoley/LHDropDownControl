@@ -28,6 +28,7 @@
 
 @interface LHDropDownControlView : UIView
 
+@property (nonatomic, assign) CGRect mBaseFrame;
 @property (nonatomic) NSString *title;
 @property (nonatomic, weak) IBOutlet id<LHDropDownControlViewDelegate> delegate;
 

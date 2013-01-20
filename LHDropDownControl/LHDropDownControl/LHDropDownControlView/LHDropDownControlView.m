@@ -14,7 +14,6 @@
 #define kAnimationDuration 0.2
 
 @implementation LHDropDownControlView {
-    CGRect mBaseFrame;
     
     // Configuration
     NSArray *mSelectionOptions, *mSelectionTitles;
@@ -58,8 +57,7 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-        mBaseFrame = frame;
-        
+        _mBaseFrame = frame;
         [self initialize];
     }
     return self;
@@ -181,7 +179,7 @@
         mSelectionCells = [NSMutableArray arrayWithCapacity:0];
         for (int i=[mSelectionTitles count]-1; i >= 0; i--) {
             UIImageView *newCell = [[UIImageView alloc] initWithImage:mBgImage];
-            newCell.frame = CGRectMake(0, mBaseFrame.size.height + (i * kOptionHeight + kOptionSpacing) - kOptionSpacing, mBaseFrame.size.width, mBaseFrame.size.height);
+            newCell.frame = CGRectMake(0, self.mBaseFrame.size.height + (i * kOptionHeight + kOptionSpacing) - kOptionSpacing, self.mBaseFrame.size.width, self.mBaseFrame.size.height);
             newCell.layer.anchorPoint = CGPointMake(0.5, 0.0);
             newCell.layer.transform = [self contractedTransorm];
             newCell.alpha = .8;
@@ -201,7 +199,7 @@
     }
     
     // Expand our frame
-    CGRect newFrame = mBaseFrame;
+    CGRect newFrame = self.mBaseFrame;
     newFrame.origin.y -= [mSelectionOptions count] * (kOptionHeight + kOptionSpacing);
     newFrame.size.height += [mSelectionOptions count] * (kOptionHeight + kOptionSpacing);
     self.frame = newFrame;
@@ -212,7 +210,7 @@
         UIView *cell = [mSelectionCells objectAtIndex:i];
         cell.alpha = .8;
         [UIView animateWithDuration:kAnimationDuration delay:(((count-1)-i) * kAnimationDuration / count) options:0 animations:^{
-            CGRect destinationFrame = CGRectMake(0, 0 + i * (kOptionHeight + kOptionSpacing), mBaseFrame.size.width, kOptionHeight);
+            CGRect destinationFrame = CGRectMake(0, 0 + i * (kOptionHeight + kOptionSpacing), self.mBaseFrame.size.width, kOptionHeight);
             cell.frame = destinationFrame;
             cell.layer.transform = CATransform3DIdentity;
         } completion:nil];
@@ -228,12 +226,12 @@
     for (int i = 0; i < count; i++) {
         UIView *cell = [mSelectionCells objectAtIndex:i];
         [UIView animateWithDuration:kAnimationDuration delay:((count - 1 - i) * kAnimationDuration / count) options:0 animations:^{
-            cell.frame = CGRectMake(0, mBaseFrame.size.height + (i * kOptionHeight + kOptionSpacing) - kOptionSpacing, mBaseFrame.size.width, mBaseFrame.size.height);
+            cell.frame = CGRectMake(0, self.mBaseFrame.size.height + (i * kOptionHeight + kOptionSpacing) - kOptionSpacing, self.mBaseFrame.size.width, self.mBaseFrame.size.height);
             cell.layer.transform = [self contractedTransorm];
         } completion:^(BOOL completed){
             cell.alpha = 0;
             if (i == 0) {
-                self.frame = mBaseFrame;
+                self.frame = self.mBaseFrame;
             }
     }];
     }
