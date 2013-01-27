@@ -58,6 +58,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         _mBaseFrame = frame;
+        _isContracted = NO;
         [self initialize];
     }
     return self;
@@ -78,6 +79,17 @@
     mTitleLabel.text = title;
 }
 
+- (void)setContracted
+{
+    [self.layer setTransform:[self contractedTransorm]];
+    self.isContracted = YES;
+}
+
+- (void)setUncontracted
+{
+    [self.layer setTransform:CATransform3DIdentity];
+    self.isContracted = NO;
+}
 
 #pragma mark - Configuration
 
