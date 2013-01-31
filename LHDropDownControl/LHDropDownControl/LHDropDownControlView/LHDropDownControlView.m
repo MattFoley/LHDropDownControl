@@ -12,7 +12,7 @@
 
 #define kOptionSpacing      2
 #define kAnimationDuration  0.2
-#define kFontSize          (UIInterfaceIdiomIsPad()?14:16)
+#define kFontSize          (UIInterfaceIdiomIsPad()?14:14)
 @implementation LHDropDownControlView {
     
     // Configuration

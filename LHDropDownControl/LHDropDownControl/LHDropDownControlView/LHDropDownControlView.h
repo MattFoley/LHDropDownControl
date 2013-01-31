@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#define kOptionHeight       (UIInterfaceIdiomIsPad()?40:30)
+#define kOptionHeight       (UIInterfaceIdiomIsPad()?30:30)
 
 @class LHDropDownControlView;
 
