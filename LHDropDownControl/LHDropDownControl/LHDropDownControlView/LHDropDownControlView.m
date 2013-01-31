@@ -8,11 +8,11 @@
 
 #import "LHDropDownControlView.h"
 #import <QuartzCore/QuartzCore.h>
+#import "UIFont+Mapcraft.h"
 
-#define kOptionHeight 20
-#define kOptionSpacing 2
-#define kAnimationDuration 0.2
-
+#define kOptionSpacing      2
+#define kAnimationDuration  0.2
+#define kFontSize          (UIInterfaceIdiomIsPad()?14:16)
 @implementation LHDropDownControlView {
     
     // Configuration
@@ -43,13 +43,13 @@
     [self addSubview:backGroundView];
     
     // Title
-    mTitleLabel = [[UILabel alloc] initWithFrame:CGRectInset(self.bounds, 5, 0)];
+    mTitleLabel = [[UILabel alloc] initWithFrame:CGRectOffset(CGRectInset(self.bounds, 5, 0), 0, 4)];
     mTitleLabel.textAlignment = NSTextAlignmentCenter;
     mTitleLabel.textColor = [UIColor whiteColor];
     mTitleLabel.backgroundColor = [UIColor clearColor];
     
     [mTitleLabel setAutoresizingMask:UIViewAutoresizingFlexibleTopMargin];
-    mTitleLabel.font = [UIFont boldSystemFontOfSize:14];
+    mTitleLabel.font = [UIFont mapCraftHeaderWithSize:kFontSize];
     [self addSubview:mTitleLabel];
 }
 
@@ -118,7 +118,7 @@
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
     if ([touches count] != 1)
         return;
-    
+
     UITouch *touch = [touches anyObject];
     
     // Calculate the selection index
@@ -197,7 +197,7 @@
             newCell.alpha = .8;
             
             UILabel *newLabel = [[UILabel alloc] initWithFrame:CGRectInset(newCell.bounds, 10, 0)];
-            newLabel.font = [UIFont systemFontOfSize:14];
+            newLabel.font = [UIFont mapCraftDetailWithSize:kFontSize];
             newLabel.backgroundColor = [UIColor clearColor];
             newLabel.textColor = [UIColor whiteColor];
             newLabel.text = [mSelectionTitles objectAtIndex:i];
