@@ -12,15 +12,17 @@
 
 #define kOptionSpacing      2
 #define kAnimationDuration  0.2
+#define kLongDuration       .5
+#define kCellTextLabelTag       42
 #define kFontSize          (UIInterfaceIdiomIsPad()?14:14)
 @implementation LHDropDownControlView {
-    
     // Configuration
     NSArray *mSelectionOptions, *mSelectionTitles;
 
     // Subviews
     UILabel *mTitleLabel;
     UIImage *mBgImage;
+    UIImageView *mBgView;
     NSMutableArray *mSelectionCells;
     
     // Control state
@@ -35,12 +37,15 @@
 - (void)initialize
 {
     // Background
-    mBgImage = [[UIImage imageNamed:@"dropdown_bg"] resizableImageWithCapInsets:UIEdgeInsetsMake(5, 5, 5, 5)];
+    mBgImage = [[UIImage imageNamed:@"dropdown_bg_red"] resizableImageWithCapInsets:UIEdgeInsetsMake(6, 6, 6, 6)];
     UIImageView *backGroundView = [[UIImageView alloc] initWithImage:mBgImage];
     [backGroundView setAlpha:.75];
+    //backGroundView.layer.borderColor = [UIColor colorWithWhite:.25 alpha:.75].CGColor;
+    //backGroundView.layer.borderWidth = 1;
     backGroundView.frame = self.bounds;
     [backGroundView setAutoresizingMask:UIViewAutoresizingFlexibleTopMargin];
     [self addSubview:backGroundView];
+    mBgView = backGroundView;
     
     // Title
     mTitleLabel = [[UILabel alloc] initWithFrame:CGRectOffset(CGRectInset(self.bounds, 5, 0), 0, 4)];
@@ -151,11 +156,12 @@
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     if (mControlIsActive) {
         if (mSelectionIndex < [mSelectionOptions count]) {
+            [self inactivateControlWithSelection:mSelectionIndex];
             [self.delegate dropDownControlView:self didFinishWithSelection:[mSelectionOptions objectAtIndex:(mSelectionCells.count-1)-mSelectionIndex]];
         } else {
+            [self inactivateControl];
             [self.delegate dropDownControlView:self didFinishWithSelection:nil];
         }
-        [self inactivateControl];
     }
 }
 
@@ -201,8 +207,9 @@
             newLabel.backgroundColor = [UIColor clearColor];
             newLabel.textColor = [UIColor whiteColor];
             newLabel.text = [mSelectionTitles objectAtIndex:i];
-            [newCell addSubview:newLabel];
+            newLabel.tag = kCellTextLabelTag;
             
+            [newCell addSubview:newLabel];
             [newCell.layer setAnchorPoint:CGPointMake(.5, 1)];
             
             [self addSubview:newCell];
@@ -248,5 +255,60 @@
     }];
     }
 }
+
+- (void)inactivateControlWithSelection:(NSInteger)selectionIndex{
+
+    mControlIsActive = NO;
+    [self.delegate dropDownControlView:self didFinishWithSelection:nil];
+    
+    int count = [mSelectionCells count];
+    for (int i = 0; i < count; i++) {
+        UIView *cell = [mSelectionCells objectAtIndex:i];
+        if (selectionIndex != i) {
+            [UIView animateWithDuration:kAnimationDuration delay:((count - 1 - i) * kAnimationDuration / count) options:0 animations:^{
+                cell.frame = CGRectMake(0, self.mBaseFrame.size.height + (i * kOptionHeight + kOptionSpacing) - kOptionSpacing, self.mBaseFrame.size.width, self.mBaseFrame.size.height);
+                cell.layer.transform = [self contractedTransorm];
+            } completion:^(BOOL completed){
+                cell.alpha = 0;
+                if (i == 0) {
+                    self.frame = self.mBaseFrame;
+                }
+            }];
+        }else{
+            UILabel *cellTitleLabel = [cell viewWithTag:kCellTextLabelTag];
+            UIFont *placeholderFont = cellTitleLabel.font;
+            cellTitleLabel.textAlignment = NSTextAlignmentCenter;
+
+            CGRect placeHolderFrame = CGRectMake(0, self.mBaseFrame.size.height + (i * kOptionHeight + kOptionSpacing) - kOptionSpacing, self.mBaseFrame.size.width, self.mBaseFrame.size.height);
+            [UIView animateWithDuration:kLongDuration delay:kAnimationDuration options:0 animations:^{
+                cell.frame = CGRectMake(0, self.frame.size.height - self.mBaseFrame.size.height, self.mBaseFrame.size.width, self.mBaseFrame.size.height);
+                [mTitleLabel setAlpha:0];
+                [mBgView setAlpha:0];
+
+                [cellTitleLabel setFrame:CGRectMake(mTitleLabel.frame.origin.x, cellTitleLabel.frame.origin.y+4, mTitleLabel.frame.size.width, mTitleLabel.frame.size.height)];
+                //cell.alpha = 0;
+                //[mTitleLabel setAlpha:1];
+            } completion:^(BOOL completed){
+                cell.frame = placeHolderFrame;
+                cell.alpha = 0;
+                [mTitleLabel setAlpha:1];
+                [mBgView setAlpha:1];
+                cellTitleLabel.frame = CGRectInset(cell.bounds, 10, 0);
+                cellTitleLabel.textAlignment = NSTextAlignmentLeft;
+                cellTitleLabel.font = placeholderFont;
+                self.frame = self.mBaseFrame;
+            }];
+            
+            CATransition *animation = [CATransition animation];
+            animation.duration = kLongDuration;
+            animation.type = kCATransitionFade;
+            animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+            [cellTitleLabel.layer addAnimation:animation forKey:@"changeTextTransition"];
+            [cellTitleLabel setFont:mTitleLabel.font];
+        }
+    }
+}
+
+
 
 @end
