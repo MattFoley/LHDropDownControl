@@ -16,7 +16,7 @@
 @implementation LHDropDownControlView {
     
     // Configuration
-    NSArray *mSelectionOptions, *mSelectionTitles;
+    NSArray *mSelectionTitles;
 
     // Subviews
     UILabel *mTitleLabel;
@@ -97,7 +97,7 @@
     if ([selectionOptions count] != [selectionOptionTitles count]) {
         [NSException raise:NSInternalInconsistencyException format:@"selectionOptions and selectionOptionTitles must contain the same number of objects"];
     }
-    mSelectionOptions = selectionOptions;
+    self.mSelectionOptions = selectionOptions;
     mSelectionTitles = selectionOptionTitles;
     mSelectionCells = nil;
 }
@@ -150,8 +150,8 @@
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     if (mControlIsActive) {
-        if (mSelectionIndex < [mSelectionOptions count]) {
-            [self.delegate dropDownControlView:self didFinishWithSelection:[mSelectionOptions objectAtIndex:(mSelectionCells.count-1)-mSelectionIndex]];
+        if (mSelectionIndex < [self.mSelectionOptions count]) {
+            [self.delegate dropDownControlView:self didFinishWithSelection:[self.mSelectionOptions objectAtIndex:(mSelectionCells.count-1)-mSelectionIndex]];
         } else {
             [self.delegate dropDownControlView:self didFinishWithSelection:nil];
         }
@@ -212,8 +212,8 @@
     
     // Expand our frame
     CGRect newFrame = self.mBaseFrame;
-    newFrame.origin.y -= [mSelectionOptions count] * (kOptionHeight + kOptionSpacing);
-    newFrame.size.height += [mSelectionOptions count] * (kOptionHeight + kOptionSpacing);
+    newFrame.origin.y -= [self.mSelectionOptions count] * (kOptionHeight + kOptionSpacing);
+    newFrame.size.height += [self.mSelectionOptions count] * (kOptionHeight + kOptionSpacing);
     self.frame = newFrame;
 
     // Show selection cells animated

@@ -33,9 +33,14 @@
 @property (nonatomic) NSString *title;
 @property (nonatomic, weak) IBOutlet id<LHDropDownControlViewDelegate> delegate;
 @property (nonatomic, assign) BOOL isContracted;
+@property (nonatomic, retain) NSArray *mSelectionOptions;
 
 - (void)setSelectionOptions:(NSArray *)selectionOptions withTitles:(NSArray *)selectionOptionTitles;
 - (CATransform3D)contractedTransorm;
+
+- (void)activateControl;
+- (void)inactivateControl;
+
 - (void)setContracted;
 - (void)setUncontracted;
 @end
